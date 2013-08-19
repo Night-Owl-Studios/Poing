@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include "objects.h"
+#include "renderApp.h"
 #include "physics.h"
 #include "logicApp.h"
 
@@ -46,6 +47,13 @@ void arenaObjMgr::launchBullet( const math::vec3& pos, const math::vec3& dir ) {
     b.trans.update();
     
     bulletList.push_back( b );
+    
+    hge::dsPointLight pntLight;
+    pntLight.color              = math::vec4( 0.f, 1.f, 0.f, 1.f );
+    pntLight.attrib.intensity   = 5.f;
+    pntLight.scale = pntLight.calcInfluenceRadius();
+    // let the renderer handle the light position
+    pRenderer->addPointLight( pntLight );
 }
 
 //-----------------------------------------------------------------------------
@@ -113,6 +121,7 @@ void arenaObjMgr::updateBulletPositions( float timeDelta ) {
         }
         else {
             bulletList.erase( bulletList.begin() + b );
+            pRenderer->removePointLight( pRenderer->getNumPointLights()-1 );
         }
     }
 }
