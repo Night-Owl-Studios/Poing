@@ -13,7 +13,7 @@
 //	Initialization
 //-----------------------------------------------------------------------------
 bool arenaRenderApp::init() {
-    if ( !hge::fwdRenderer::init() ) return false;
+    if ( !hge::dsRenderer::init( pWindow->getResolution() ) ) return false;
     
     /*
      * Bitmaps
@@ -54,36 +54,31 @@ bool arenaRenderApp::init() {
     
     changeResolution            ( pWindow->getResolution() );
     viewportCam.update          ();
-    printGlError("Object setup error");
+    printGlError("Viewport setup error");
     
     overlayTrans.setPos         ( math::vec3( -5.f, 1.f, -5.f ) );
     overlayTrans.setScale       ( math::vec3( 0.05f ) );
     overlayTrans.update         ();
     overlayStr.setString        ( overlayFont, GAME_TITLE );
-    printGlError("Object setup error");
+    printGlError("Overlay setup error");
     
     setFontColor                ( math::vec4( 0.f, 0.25f, 0.75f, 0.5f ) );
-    printGlError("Object setup error");
+    printGlError("Font setup error");
     
-    // Setup the ambient light
     {
-        hge::ambientLight amb;
-        amb.color               = math::vec4( 0.f, 0.25f, 0.75f, 1.f );
-        amb.intensity           = 0.5f;
-        setAmbientLight         ( amb );
-    printGlError("Object setup error");
-    }
-    // Point Light Setup
-    {
-        hge::pointLight pntLight;
-        pntLight.color          = math::vec4( 1.f, 0.f, 0.f, 1.f );
-        pntLight.intensity      = 0.5f;
-        pntLight.constant       = 0.05f;
-        pntLight.exponential    = 0.001f;
-        pntLight.linear         = 0.01f;
-        pntLight.pos            = math::vec3( 0.f, -5.f, 0.f );
-        setPointLight           ( pntLight );
-    printGlError("Object setup error");
+        hge::dsPointLight pntLight;
+        pntLight.color              = math::vec4( 1.f, 0.f, 0.f, 1.f );
+        pntLight.attrib.intensity   = 50.f;
+        pntLight.scale = pntLight.calcInfluenceRadius();
+        pntLight.position           = math::vec3( 0.f, -3.f, 0.f );
+        addPointLight( pntLight );
+        
+        pntLight.color              = math::vec4( 0.f, 0.f, 1.f, 1.f );
+        pntLight.attrib.intensity   = 100.f;
+        pntLight.scale = pntLight.calcInfluenceRadius();
+        pntLight.position           = math::vec3( 0.f, 5.f, 0.f );
+        addPointLight( pntLight );
+        printGlError("Point Light setup error");
     }
     
     floorTrans.setScale     ( math::vec3( 2.125f ) );
@@ -93,7 +88,7 @@ bool arenaRenderApp::init() {
         enemyBB.setImagePos( i, math::vec3( 0.f, MAX_LEVEL_DEPTH, 0.f ) );
     }
     
-    printGlError("Object setup error");
+    printGlError("Enemy setup error");
     
     return true;
 }
@@ -168,11 +163,7 @@ void arenaRenderApp::zoomArenaCam( float amount ) {
 //-----------------------------------------------------------------------------
 //      Keeping the arena camera within certain limits
 //-----------------------------------------------------------------------------
-void 
-/******************************************************************************
- * LIGHT HANDLING
-******************************************************************************/
-arenaRenderApp::retainArenaCam() {
+void arenaRenderApp::retainArenaCam() {
     const float heightLimit   = viewportCam.getOrbitDist() * std::sin( HL_PI_OVER_4 );
     //const float heightLimit    = viewportCam.getOrbitDist() * std::sin( HL_PI_OVER_6 );
     const float depthLimit    = 0.f;
@@ -193,12 +184,15 @@ arenaRenderApp::retainArenaCam() {
 void arenaRenderApp::drawBullets( const bulletList_t& bulletList ) {
     bulletTex.activate();
     
-    for ( const bullet& b : bulletList ) {
-        applyMatrix( HGE_MODEL_MAT, b.trans.getModelMatrix() );
+    for ( unsigned i = 0; i < bulletList.size(); ++i ) {
+        dsPointLights[ i+2 ].position = bulletList[ i ].trans.getPos();
+        applyMatrix( HGE_MODEL_MAT, bulletList[ i ].trans.getModelMatrix() );
         spherePrim.draw();
     }
     
     bulletTex.deActivate();
+    
+    lightSphere.setLightBuffer( dsPointLights.data(), dsPointLights.size() );
 }
 
 /******************************************************************************
@@ -225,11 +219,9 @@ void arenaRenderApp::drawSceneLit() {
     drawBullets( arenaLogicApp::objMgr.getBulletList() );
     
     // Objects using the point-light shader
-    glEnable( GL_BLEND );
     applyMatrix( HGE_MODEL_MAT, floorTrans.getModelMatrix() );
     floorMesh.draw();
     blankNormMap.deActivate();
-    glDisable( GL_BLEND );
 }
 
 /******************************************************************************

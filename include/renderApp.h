@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 //	Game Application Class
 //-----------------------------------------------------------------------------
-class arenaRenderApp : public hge::fwdRenderer {
+class arenaRenderApp : public hge::dsRenderer {
     private:
         blankNormalMap      blankNormMap;
         hge::camera         viewportCam;
@@ -46,7 +46,7 @@ class arenaRenderApp : public hge::fwdRenderer {
         ~arenaRenderApp         () { terminate(); }
         
         bool    init            ();
-        void    terminate       () { hge::fwdRenderer::terminate(); }
+        void    terminate       () { hge::dsRenderer::terminate(); }
         
         void    updateScene     ( float );
         
@@ -60,7 +60,6 @@ class arenaRenderApp : public hge::fwdRenderer {
         
         void    drawSceneLit    ();
         void    drawSceneUnlit  () {}
-        //void    drawShadows     () {}
         void    drawSky         ();
         void    drawFonts       ();
         void    drawBillboards  ();
