@@ -5,6 +5,7 @@ A pong-like tech demo for the Harbinger Game Engine.
 
 Controls:
     Mouse movement:     Rotate the camera
+    Mouse Wheel:        Zoom in/out
     Left mouse button:  Fire a bullet
     Escape:             Quit the game
 

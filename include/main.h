@@ -19,10 +19,10 @@ using namespace hamLibs;
 #define HGE_VP_MAT hge::pipeline::HGE_VP_MAT
 
 // harbinger input callbacks
-using hgeKey_t     = hge::inputSystem::key_t;
-using hgeAction_t  = hge::inputSystem::action_t;
-using hgeMod_t     = hge::inputSystem::mod_t;
-using hgeMouse_t   = hge::inputSystem::mouse_t;
+using hgeKey_t     = hge::input::key_t;
+using hgeAction_t  = hge::input::action_t;
+using hgeMod_t     = hge::input::mod_t;
+using hgeMouse_t   = hge::input::mouse_t;
 
 /******************************************************************************
  * Forward declarations of Classes
@@ -70,7 +70,7 @@ class arenaObjMgr;
  * Global Variables
 ******************************************************************************/
 extern hge::window*         pWindow;
-extern hge::inputSystem*    pInput;
+extern hge::input*    pInput;
 extern arenaRenderApp*      pRenderer;
 extern arenaLogicApp*       pGameLogic;
 

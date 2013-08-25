@@ -6,7 +6,7 @@
 #include "logicApp.h"
 
 hge::window*        pWindow     = nullptr;
-hge::inputSystem*   pInput      = nullptr;
+hge::input*   pInput      = nullptr;
 arenaRenderApp*     pRenderer   = nullptr;
 arenaLogicApp*      pGameLogic  = nullptr;
 
@@ -21,16 +21,18 @@ bool init() {
     
     try {
         pWindow     = new hge::window       ( 1280, 720, true, nullptr, false );
-        pInput      = new hge::inputSystem  ( *pWindow );
+        pInput      = new hge::input  ( *pWindow );
         pRenderer   = new arenaRenderApp    ();
         pGameLogic  = new arenaLogicApp     ();
-        
-        HL_ASSERT( pRenderer->init() );
     }
     catch( hamLibs::utils::errorType& e ) {
         std::cerr
             << "Unable to initialize " << GAME_TITLE << ". Please "
             << "Check all initialization routines for errors." << std::endl;
+        return false;
+    }
+        
+    if ( !pRenderer->init() ) {
         return false;
     }
     

@@ -3,3 +3,5 @@
 /nbproject/
 /Poing-debug.sh
 /Poing-debug.exe
+/include/guiTest.h
+/src/guiTest.cpp
