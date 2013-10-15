@@ -37,7 +37,7 @@ bool arenaRenderApp::init() {
     if ( !skyTex.load( "resources/sky/top.jpg", 3 ) ) return false;
     if ( !skyTex.load( "resources/sky/front.jpg", 4 ) ) return false;
     if ( !skyTex.load( "resources/sky/back.jpg", 5 ) ) return false;
-    if ( !spherePrim.init() ) return false;
+    if ( !spherePrim.init( 1 ) ) return false;
     
     /*
      * Fonts
@@ -202,7 +202,8 @@ void arenaRenderApp::drawEnemies( const enemyList_t& enemyList ) {
     unsigned iter = 0;
     
     for ( const enemy& e : enemyList ) {
-        enemyBB.setImagePos( iter++, e.pos );
+        enemyBB.setImagePos( iter, e.pos );
+        enemyBB.setImageSize( iter++, 1.f );
     }
     
     enemyTex.activate();

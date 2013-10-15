@@ -63,6 +63,7 @@ class arenaRenderApp : public hge::dsRenderer {
         void    drawSky         ();
         void    drawFonts       ();
         void    drawBillboards  ();
+        void    drawDebug       () {}
         
         void    drawBullets     ( const bulletList_t& );
         void    drawEnemies     ( const enemyList_t& );
